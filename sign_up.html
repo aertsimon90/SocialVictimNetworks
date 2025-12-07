@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Onboarding - New Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563EB; /* Vibrant Blue */
+            --secondary-color: #6B7280; /* Subtle Gray */
+            --background-color: #1F2937; /* Dark Background (Minimalist) */
+            --card-background: #374151; /* Slightly lighter dark card */
+            --text-color: #F9FAFB;
+            --input-bg: #4B5563;
+            --success-color: #10B981;
+            --error-color: #EF4444;
+            --border-radius: 10px;
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-color);
+            padding: 20px 10px; /* Küçük ekranlarda kenar boşluğu */
+            overflow-y: auto; /* Ekran kaydırmayı etkin tutar */
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--card-background);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 20px 0; /* Sayfa kaydırılabilir olduğunda üst/alt boşluk */
+        }
+
+        h2 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-color);
+            font-size: 1.8rem; /* Küçültüldü */
+        }
+        
+        p.subtitle {
+            color: var(--secondary-color);
+            margin-bottom: 35px;
+            font-weight: 300;
+        }
+
+        /* --- Form Steps Styling --- */
+        .form-step {
+            display: none;
+            animation: slideIn 0.5s ease-out; 
+        }
+
+        .form-step.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- Input Fields (Aynı kaldı) --- */
+        .input-group { margin-bottom: 25px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em; color: var(--text-color); }
+        .input-group input {
+            width: 100%; padding: 15px; background-color: var(--input-bg);
+            border: 1px solid transparent; border-radius: 8px; box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s; font-size: 1em; color: var(--text-color);
+        }
+        .input-group input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 1px var(--primary-color); }
+        .input-group input::placeholder { color: rgba(249, 250, 251, 0.5); }
+
+
+        /* --- Buttons (Aynı kaldı) --- */
+        .button-group { display: flex; justify-content: space-between; margin-top: 40px; }
+        .btn { padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background-color 0.3s, transform 0.1s; font-size: 1em; text-decoration: none; letter-spacing: 0.5px; }
+        .btn-primary { background-color: var(--primary-color); color: var(--text-color); }
+        .btn-primary:hover { background-color: #1D4ED8; transform: translateY(-1px); }
+        .btn-secondary { background-color: var(--input-bg); color: var(--text-color); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-secondary:hover { background-color: #4B5563; }
+        .btn-full { width: 100%; margin-top: 20px; }
+
+        /* --- Social Login - YAN YANA VE RESPONSIVE ALAN --- */
+        .social-login {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-login p {
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+
+        .social-buttons {
+            display: flex;
+            flex-wrap: wrap; /* Butonların gerekirse alt satıra geçmesini sağlar */
+            gap: 8px; /* Aradaki boşluk daha dar */
+            justify-content: space-between; /* Yana yayılmasını sağlar */
+        }
+
+        .social-btn {
+            flex-grow: 1; /* Alandaki boşluğu doldurur */
+            flex-basis: auto; /* Boyutun içeriğe göre ayarlanmasını sağlar */
+            min-width: 120px; /* Çok küçük cihazlarda bile okunabilir minimum genişlik */
+            padding: 12px 10px;
+            background-color: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .social-btn:hover {
+            background-color: #4B5563;
+        }
+        
+        .social-btn i {
+            margin-right: 5px; /* İkon ile yazı arası boşluk daraltıldı */
+            font-size: 1em;
+        }
+        
+        /* Ekran 400px'den küçükse (Çok küçük telefonlar) 2 buton yan yana, 3. altta */
+        @media (max-width: 400px) {
+            .social-buttons {
+                justify-content: space-around;
+            }
+            .social-btn {
+                flex-basis: calc(50% - 10px); 
+            }
+        }
+        /* Sosyal medya ikon renkleri (Aynı kaldı) */
+        .google i { color: #F87171; }
+        .github i { color: #D1D5DB; }
+        .facebook i { color: #60A5FA; }
+        .instagram i { color: #FBBF24; }
+        .meta i { color: #A78BFA; }
+
+        /* --- Privacy Policy and Checkbox (Aynı kaldı) --- */
+        .privacy-group { text-align: left; margin-top: 30px; font-size: 0.9em; display: flex; align-items: flex-start; }
+        .privacy-group input[type="checkbox"] { margin-top: 4px; margin-right: 12px; min-width: 16px; height: 16px; accent-color: var(--primary-color); border: 1px solid var(--secondary-color); background-color: var(--input-bg); }
+        .privacy-group a { color: var(--primary-color); text-decoration: none; font-weight: 500; }
+
+        /* --- Alert Messages (Aynı kaldı) --- */
+        .alert { padding: 18px; margin-bottom: 25px; border-radius: 8px; font-weight: 500; display: none; text-align: left; border-left: 5px solid; }
+        .alert-error { background-color: #450A0A; color: var(--error-color); border-left-color: var(--error-color); }
+        .alert-success { background-color: #064E3B; color: var(--success-color); border-left-color: var(--success-color); }
+
+        /* --- Progress Bar (Aynı kaldı) --- */
+        .progress-bar-container { width: 100%; height: 6px; background-color: var(--input-bg); border-radius: 3px; margin-bottom: 30px; }
+        .progress-bar { height: 100%; width: 0%; background-color: var(--primary-color); border-radius: 3px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body>
+
+    <div class="signup-container">
+        <h2>Start Your Journey</h2>
+        <p class="subtitle">Securely create your professional account.</p>
+
+        <div class="progress-bar-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <div id="alertMessage" class="alert alert-error"></div>
+
+        <form id="registrationForm" onsubmit="event.preventDefault();">
+
+            <div id="step-1" class="form-step active">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a unique name (min 5 characters)" required minlength="5" maxlength="20">
+                </div>
+                
+                <div class="social-login">
+                    <p>Or sign up via</p>
+                    <div class="social-buttons">
+                        <a href="/sign_up/google" class="social-btn google"><i class="fab fa-google"></i> Google</a>
+                        <a href="/sign_up/github" class="social-btn github"><i class="fab fa-github"></i> GitHub</a>
+                        <a href="/sign_up/facebook" class="social-btn facebook"><i class="fab fa-facebook-f"></i> Facebook</a>
+                        <a href="/sign_up/instagram" class="social-btn instagram"><i class="fab fa-instagram"></i> Instagram</a>
+                        <a href="/sign_up/facebook" class="social-btn meta"><i class="fab fa-facebook-square"></i> Meta</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-2" class="form-step">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password (min 8 characters)" required minlength="8" maxlength="128">
+                </div>
+                <div class="input-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Verify your password" required>
+                </div>
+            </div>
+
+            <div id="step-3" class="form-step">
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Your primary contact email" required maxlength="64">
+                </div>
+            </div>
+
+            <div id="step-4" class="form-step">
+                <div class="input-group">
+                    <label for="bdate">Date of Birth</label>
+                    <input type="date" id="bdate" name="bdate" required> 
+                    <small style="color: var(--secondary-color); display: block; margin-top: 8px;">Used for account verification (stored as timestamp).</small>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Include country code (e.g., +90 5XX XXX XX XX)" required maxlength="30">
+                </div>
+            </div>
+            
+            <div id="step-5" class="form-step">
+                <div class="privacy-group">
+                    <input type="checkbox" id="privacy-policy" name="privacy-policy" required>
+                    <div>
+                        I acknowledge and agree to the <a href="#" target="_blank">Privacy Policy</a> and <a href="#" target="_blank">Terms of Service</a>.
+                    </div>
+                </div>
+                <button type="button" id="submitBtn" class="btn btn-primary btn-full">Create Account</button>
+            </div>
+        </form>
+
+        <div class="button-group">
+            <button type="button" id="backBtn" class="btn btn-secondary" style="visibility: hidden;">Back</button>
+            <button type="button" id="continueBtn" class="btn btn-primary">Continue</button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentStep = 1;
+            const totalSteps = 5;
+            const formSteps = document.querySelectorAll('.form-step');
+            const backBtn = document.getElementById('backBtn');
+            const continueBtn = document.getElementById('continueBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const alertMessage = document.getElementById('alertMessage');
+            const progressBar = document.getElementById('progressBar');
+
+            function updateProgressBar() {
+                const progress = (currentStep - 1) / (totalSteps - 1) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function updateUI() {
+                formSteps.forEach((step, index) => {
+                    step.classList.remove('active');
+                });
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+
+                // Geri butonu
+                backBtn.style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+
+                // Devam butonu
+                continueBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
+
+                // Hesap Oluştur butonu sadece son adımda görünür
+                document.getElementById('step-5').querySelector('#submitBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+                
+                // Navigasyon butonlarının hizalaması
+                document.querySelector('.button-group').style.justifyContent = currentStep === totalSteps ? 'center' : 'space-between';
+
+                updateProgressBar();
+                hideAlert();
+            }
+
+            function showAlert(message, type = 'error') {
+                alertMessage.textContent = message;
+                alertMessage.className = `alert alert-${type}`;
+                alertMessage.style.display = 'block';
+                alertMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function hideAlert() {
+                alertMessage.style.display = 'none';
+            }
+
+            function validateStep(step) {
+                const stepElement = document.getElementById(`step-${step}`);
+                const requiredInputs = stepElement.querySelectorAll('input:required, textarea:required');
+                let isValid = true;
+                let errorMessage = "";
+                
+                for(const input of requiredInputs) {
+                    if (!input.value.trim()) {
+                        errorMessage = "Please fill in all required fields.";
+                        isValid = false;
+                        break;
+                    }
+
+                    if (input.id === 'username' && input.value.length < 5) {
+                        errorMessage = "Username must be at least 5 characters long.";
+                        isValid = false;
+                        break;
+                    } else if (input.id === 'password' && input.value.length < 8) {
+                        errorMessage = "Password must be at least 8 characters long.";
+                        isValid = false;
+                        break;
+                    } else if (input.id === 'confirm-password' && input.value !== document.getElementById('password').value) {
+                        errorMessage = "Passwords do not match.";
+                        isValid = false;
+                        break;
+                    } else if (input.id === 'email' && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(input.value)) {
+                        errorMessage = "Please enter a valid email address.";
+                        isValid = false;
+                        break;
+                    } else if (input.id === 'phone' && input.value.length < 5) {
+                        errorMessage = "Please enter a valid phone number (min 5 characters).";
+                        isValid = false;
+                        break;
+                    } else if (input.id === 'bdate' && !input.value) {
+                        errorMessage = "Date of birth is required.";
+                        isValid = false;
+                        break;
+                    }
+                }
+                
+                if (!isValid) {
+                    showAlert(errorMessage);
+                }
+
+                return isValid;
+            }
+
+            // --- Navigation Handlers ---
+
+            continueBtn.addEventListener('click', () => {
+                if (validateStep(currentStep)) {
+                    if (currentStep < totalSteps) {
+                        currentStep++;
+                        updateUI();
+                    }
+                }
+            });
+
+            backBtn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateUI();
+                }
+            });
+
+            // --- Submission Handler ---
+
+            submitBtn.addEventListener('click', async () => {
+                if (!document.getElementById('privacy-policy').checked) {
+                    showAlert("You must agree to the Privacy Policy and Terms of Service to create an account.");
+                    return;
+                }
+
+                // Tüm verileri topla
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value; 
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                
+                // Doğum tarihi (bdate) ve timestamp'e dönüştürme (float)
+                const bdateString = document.getElementById('bdate').value; 
+                const dateObject = new Date(bdateString);
+                const bdateTimestamp = dateObject.getTime() / 1000; 
+
+                const userData = {
+                    username: username,
+                    password: password,
+                    email: email,
+                    bdate: bdateTimestamp, 
+                    phone: phone
+                };
+
+                hideAlert();
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating Account...';
+
+                try {
+                    const response = await fetch('/api/create_acc', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(userData)
+                    });
+
+                    const responseText = await response.text();
+
+                    if (response.ok) {
+                        showAlert('Account successfully created! Redirecting to login page...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/log_in'; 
+                        }, 2000);
+                    } else {
+                        showAlert(`Registration Failed: ${responseText}`);
+                    }
+                } catch (error) {
+                    console.error('Network Error:', error);
+                    showAlert('A network error occurred. Please check your connection and try again.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Account';
+                }
+            });
+
+            updateUI();
+        });
+    </script>
+</body>
+</html>

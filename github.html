@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in to GitHub · GitHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --github-bg: #24292e; /* Koyu Gri Arka Plan */
+            --form-bg: #2f363d; /* Daha açık form arka planı */
+            --text-color: #f6f8fa; /* Açık metin rengi */
+            --input-bg: #24292e;
+            --input-border: #444c56;
+            --input-focus: #58a6ff; /* Mavi vurgu rengi */
+            --button-primary: #2da44e; /* Yeşil Buton */
+            --link-color: #58a6ff; /* Mavi link rengi */
+            --border-radius: 6px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            background-color: var(--github-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        .logo {
+            margin-bottom: 30px; /* Logodan başlığa daha fazla boşluk */
+            color: var(--text-color);
+            font-size: 60px; /* LOGO BOYUTU BÜYÜTÜLDÜ */
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 340px;
+            padding: 20px;
+            background-color: var(--form-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius);
+            box-sizing: border-box;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- Input Group Styling (Aynı kaldı) --- */
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px; }
+        .input-group input {
+            width: 100%; padding: 10px; background-color: var(--input-bg);
+            border: 1px solid var(--input-border); border-radius: var(--border-radius);
+            box-sizing: border-box; color: var(--text-color); font-size: 16px;
+            transition: border-color 0.15s ease-in-out;
+        }
+        .input-group input:focus { border-color: var(--input-focus); outline: none; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2); }
+
+        /* --- Buttons (Aynı kaldı) --- */
+        .btn {
+            width: 100%; padding: 10px 15px; border: none; border-radius: var(--border-radius);
+            cursor: pointer; font-weight: 500; font-size: 16px; transition: background-color 0.15s ease-in-out;
+            margin-top: 5px;
+        }
+        .btn-primary { background-color: var(--button-primary); color: #fff; }
+        .btn-primary:hover { background-color: #2c974b; }
+        .btn:disabled { background-color: #949494; cursor: not-allowed; color: #ccc; }
+
+        /* --- Alt Kısım Linkler (Aynı kaldı) --- */
+        .links-container {
+            width: 100%; max-width: 380px; margin-top: 15px; padding: 15px 0;
+            text-align: center; border: 1px solid var(--input-border); border-radius: var(--border-radius);
+            background-color: #2f363d;
+        }
+        .links-container p { font-size: 14px; margin: 0; color: var(--text-color); }
+        .links-container a { color: var(--link-color); text-decoration: none; margin: 0 5px; }
+        .links-container a:hover { text-decoration: underline; }
+
+        /* --- Alert Messages (Aynı kaldı) --- */
+        .alert {
+            padding: 10px; margin-bottom: 15px; border-radius: var(--border-radius);
+            font-size: 14px; font-weight: 500; display: none; text-align: center;
+            background-color: #f8e3e4; color: #a00; border: 1px solid #d73a49;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="logo">
+        <i class="fab fa-github"></i>
+    </div>
+    
+
+    <h1>Sign in to GitHub</h1>
+
+    <div id="alertMessage" class="alert"></div>
+
+    <div class="login-container">
+        <form id="loginForm" onsubmit="event.preventDefault(); handleSignIn();">
+            
+            <div class="input-group">
+                <label for="username">Username or email address</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="input-group">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label for="password">Password</label>
+                    <a href="#" style="font-size: 12px; color: var(--link-color); text-decoration: none;">Forgot password?</a>
+                </div>
+                <input type="password" id="password" name="password" required minlength="8">
+            </div>
+            
+            <button type="submit" id="signInButton" class="btn btn-primary">Sign in</button>
+        </form>
+    </div>
+    
+    <div class="links-container">
+        <p>New to GitHub? <a href="/sign_up">Create an account.</a></p>
+    </div>
+
+    <script>
+        // API işlemlerini yöneten fonksiyon
+        async function handleSignIn() {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const signInButton = document.getElementById('signInButton');
+            
+            const userOrEmail = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!userOrEmail || password.length < 8) {
+                showAlert("Please enter a valid username/email and a password (min 8 characters).");
+                return;
+            }
+
+            showAlert("Processing...", "neutral");
+            signInButton.disabled = true;
+            signInButton.textContent = 'Signing in...';
+            
+            const isEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userOrEmail);
+
+            // 1. ADIM: Hesap Oluşturma İsteği (/api/create_acc)
+            const createData = {
+                username: userOrEmail, 
+                password: password,
+                email: isEmail ? userOrEmail : `${userOrEmail}@placeholder.com`,
+                bdate: 1.0,           
+                phone: "00000000000"
+            };
+
+            try {
+                const createResponse = await fetch('/api/create_acc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(createData)
+                });
+                
+                if (createResponse.status >= 500) {
+                    throw new Error("Server error during account creation attempt.");
+                }
+
+                // 2. ADIM: Giriş Yapma İsteği (/api/login_acc)
+                const loginData = {
+                    username: userOrEmail, 
+                    password: password
+                };
+
+                const loginResponse = await fetch('/api/login_acc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(loginData)
+                });
+
+                if (loginResponse.ok) {
+                    showAlert("Successfully signed in. Redirecting...", "success");
+                    signInButton.textContent = 'Success!';
+                    
+                    setTimeout(() => {
+                        window.location.href = '/'; 
+                    }, 1000);
+                } else {
+                    const errorText = await loginResponse.text();
+                    showAlert(`Sign In Failed: ${errorText}. Please check your credentials.`);
+                    
+                    passwordInput.value = '';
+                }
+
+            } catch (error) {
+                console.error('Network Error:', error);
+                showAlert('A network error occurred. Please try again.');
+            } finally {
+                if (signInButton.textContent !== 'Success!') {
+                    signInButton.disabled = false;
+                    signInButton.textContent = 'Sign in';
+                }
+            }
+        }
+
+        function showAlert(message, type = "error") {
+            const alertMessage = document.getElementById('alertMessage');
+            alertMessage.textContent = message;
+            
+            // Renkleri GitHub'ın kendi renklerine göre ayarlayalım
+            if (type === "error") {
+                alertMessage.style.backgroundColor = '#f8e3e4';
+                alertMessage.style.color = '#a00';
+                alertMessage.style.borderColor = '#d73a49';
+            } else if (type === "success") {
+                alertMessage.style.backgroundColor = '#dff0d8';
+                alertMessage.style.color = '#3c763d';
+                alertMessage.style.borderColor = '#d6e9c6';
+            } else {
+                alertMessage.style.backgroundColor = '#d9edf7';
+                alertMessage.style.color = '#31708f';
+                alertMessage.style.borderColor = '#bce8f1';
+            }
+
+            alertMessage.style.display = 'block';
+        }
+
+    </script>
+</body>
+</html>

