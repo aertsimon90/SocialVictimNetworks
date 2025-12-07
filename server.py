@@ -31,9 +31,9 @@ class User:
     def create(self, user, email, bdate, phone, key, logs):
         global data
         user = str(user);email = str(email);bdate = float(bdate);phone = str(phone);key = str(key);logs = dict(logs)
-        if len(user) < 5:
-            raise ValueError("Username must be longer than 5 characters.")
-        user = user[:20]
+        user = user[:64]
+        if len(user) == 0:
+            raise ValueError("Username is not found.")
         if len(email) < 5:
             raise ValueError("Invalid email.")
         email = email[:64]
@@ -45,9 +45,6 @@ class User:
         if len(key) < 8:
             raise ValueError("Invalid password.")
         key = key[:128]
-        user = "".join([h if h in "qwertyuopasdfghjklizxcvbnmQWERTYUOPASDFGHJKLZXCVBNM1234567890" else "" for h in user])
-        if len(user) < 5:
-            user = "user0"+user
         if user not in data["users"]:
             with lock:
                 data["users"][user] = {"email": email, "phone": phone, "key": key, "logs": [logs], "data": []}
